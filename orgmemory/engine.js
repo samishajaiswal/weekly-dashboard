@@ -11,8 +11,8 @@
 // URL format: https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq?tqx=out:csv&sheet=SHEET_NAME
 //
 // Set USE_GOOGLE_SHEETS = true once you have filled in SHEET_ID.
-const USE_GOOGLE_SHEETS = false;
-const SHEET_ID = 'YOUR_SHEET_ID_HERE';
+const USE_GOOGLE_SHEETS = true;
+const SHEET_ID = '18ho86aUanzWiFMTvB9bIkiAL54nZ1WeH';
 
 const SHEET_NAMES = ['project_meta', 'modules', 'closure_status', 'infra', 'upcoming'];
 

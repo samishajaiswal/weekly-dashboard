@@ -1,9 +1,32 @@
-/* engine.js — NVVN Dashboard Data Engine
-   Loads data.csv, parses ## SHEET sections, and drives all dynamic elements.
-   Requires PapaParse CDN. Works via Live Server (not direct file open). */
+const USE_GOOGLE_SHEETS = true;
+const SHEET_ID = '1lyCiybzFoqVGeKVY_5OboSj1oZ50B1Mn';
+
+const SHEET_NAMES = ['project_meta', 'modules', 'closure_status', 'infra', 'upcoming'];
+
+function buildSheetUrl(sheetName) {
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+}
 
 const ENGINE = (() => {
 
+  // ── PARSER ─────────────────────────────────────────────────────────────────
+
+  // For Google Sheets mode: each tab is fetched individually and already is a
+  // plain CSV (no ## SHEET: header needed).
+  async function fetchGoogleSheets() {
+    const sheets = {};
+    await Promise.all(SHEET_NAMES.map(async name => {
+      const url = buildSheetUrl(name);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed to fetch sheet "${name}": ${res.status}`);
+      const csv = await res.text();
+      const parsed = Papa.parse(csv.trim(), { header: true, skipEmptyLines: true });
+      sheets[name] = parsed.data;
+    }));
+    return sheets;
+  }
+
+  // For local data.csv mode: parses the multi-section ## SHEET: file
   function parseCSV(raw) {
     const sheets = {};
     const sections = raw.split(/^## SHEET:\s*/m).filter(s => s.trim());
@@ -17,6 +40,7 @@ const ENGINE = (() => {
     return sheets;
   }
 
+  // ── DOM HELPERS ────────────────────────────────────────────────────────────
   function setEl(id, val) {
     const el = document.getElementById(id);
     if (el) el.textContent = val;
@@ -26,6 +50,7 @@ const ENGINE = (() => {
     if (el) el.innerHTML = val;
   }
 
+  // ── BUILDERS ───────────────────────────────────────────────────────────────
   function buildMeta(data) {
     const m = {};
     data.forEach(r => { m[r.key] = r.value; });
@@ -45,7 +70,6 @@ const ENGINE = (() => {
     document.querySelectorAll('.main-progress-fill').forEach(el => {
       setTimeout(() => el.style.width = pct + '%', 300);
     });
-    // Animate circle
     const circle = document.getElementById('progress-circle');
     if (circle) {
       const r = 54; const circ = 2 * Math.PI * r;
@@ -74,7 +98,6 @@ const ENGINE = (() => {
     const inprogress = modules.filter(m => m.status === 'In Progress');
     const upcoming = modules.filter(m => m.status === 'Upcoming');
 
-    // Total modules list (numbered, two columns)
     const allList = document.getElementById('all-modules-list');
     if (allList) {
       allList.innerHTML = modules.map((m, i) => `
@@ -86,18 +109,16 @@ const ENGINE = (() => {
       `).join('');
     }
 
-    // Completed list
     const compList = document.getElementById('completed-modules-list');
     if (compList) {
-      compList.innerHTML = completed.map((m, i) => `
+      compList.innerHTML = completed.map(m => `
         <div class="module-item">
           <span class="check-icon">✓</span>
           <span>${m.module_name}</span>
         </div>
-      `).join('');
+      `).join('') || '<div class="module-item" style="color:var(--muted);font-style:italic">No completed modules yet.</div>';
     }
 
-    // In Progress list
     const ipList = document.getElementById('inprogress-modules-list');
     if (ipList) {
       ipList.innerHTML = inprogress.map(m => `
@@ -109,10 +130,9 @@ const ENGINE = (() => {
           </div>
           ${m.expected_date ? `<div class="ip-date">Expected: ${m.expected_date}</div>` : ''}
         </div>
-      `).join('');
+      `).join('') || '<div class="module-item" style="color:var(--muted);font-style:italic">None currently in progress.</div>';
     }
 
-    // Upcoming list
     const upList = document.getElementById('upcoming-modules-list');
     if (upList) {
       upList.innerHTML = upcoming.map(m => `
@@ -121,11 +141,11 @@ const ENGINE = (() => {
           <span>${m.module_name}</span>
           ${m.expected_date ? `<span class="up-date">${m.expected_date}</span>` : ''}
         </div>
-      `).join('');
+      `).join('') || '<div class="module-item" style="color:var(--muted);font-style:italic">No upcoming modules listed.</div>';
     }
   }
 
-  function buildDonutChart(canvasId, completed, inprogress, upcoming, color) {
+  function buildDonutChart(canvasId, completed, inprogress, upcoming) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -152,13 +172,11 @@ const ENGINE = (() => {
       startAngle += slice;
     });
 
-    // Inner circle (donut hole)
     ctx.beginPath();
     ctx.arc(cx, cy, innerR, 0, 2*Math.PI);
     ctx.fillStyle = '#ffffff';
     ctx.fill();
 
-    // Center text
     ctx.textAlign = 'center';
     ctx.fillStyle = '#1a2744';
     ctx.font = 'bold 22px Rajdhani';
@@ -167,7 +185,6 @@ const ENGINE = (() => {
     ctx.fillStyle = '#8899bb';
     ctx.fillText('Total', cx, cy + 18);
 
-    // Legend
     const legend = document.getElementById(canvasId + '-legend');
     if (legend) {
       legend.innerHTML = data.map((v, i) => `
@@ -199,11 +216,10 @@ const ENGINE = (() => {
     const padL = 36, padR = 16, padT = 16, padB = 48;
     const barW = (W - padL - padR) / bars.length * 0.55;
     const gap = (W - padL - padR) / bars.length;
-    const maxVal = total;
+    const maxVal = total || 1;
     const chartH = H - padT - padB;
 
     ctx.clearRect(0, 0, W, H);
-    // Grid lines
     for (let i=0; i<=4; i++) {
       const y = padT + chartH - (i/4)*chartH;
       ctx.strokeStyle = '#e8eef8'; ctx.lineWidth = 1;
@@ -216,8 +232,6 @@ const ENGINE = (() => {
       const x = padL + i * gap + gap/2 - barW/2;
       const barH = (b.val / maxVal) * chartH;
       const y = padT + chartH - barH;
-
-      // Rounded top bar
       const rad = 4;
       ctx.fillStyle = b.color;
       ctx.beginPath();
@@ -230,12 +244,8 @@ const ENGINE = (() => {
       ctx.quadraticCurveTo(x, y, x+rad, y);
       ctx.closePath();
       ctx.fill();
-
-      // Value label
       ctx.fillStyle = '#1a2744'; ctx.font = 'bold 12px Rajdhani'; ctx.textAlign = 'center';
       ctx.fillText(b.val, x + barW/2, y - 5);
-
-      // X label
       ctx.fillStyle = '#4a5880'; ctx.font = '10px Nunito Sans';
       ctx.fillText(b.label, x + barW/2, H - 8);
     });
@@ -279,11 +289,28 @@ const ENGINE = (() => {
     `).join('');
   }
 
+  function showError(msg) {
+    const el = document.getElementById('load-error');
+    if (el) {
+      el.style.display = 'block';
+      el.innerHTML = `
+        <strong>⚠ Data load failed.</strong> ${msg}<br>
+        <small style="opacity:.7">Check that the Google Sheet is published to the web, the SHEET_ID is correct, and CORS is not blocked. You can also open the browser console for details.</small>
+      `;
+    }
+  }
+
   async function init() {
     try {
-      const res = await fetch('data.csv');
-      const raw = await res.text();
-      const sheets = parseCSV(raw);
+      let sheets;
+      if (USE_GOOGLE_SHEETS) {
+        sheets = await fetchGoogleSheets();
+      } else {
+        const res = await fetch('data.csv');
+        if (!res.ok) throw new Error(`HTTP ${res.status} fetching data.csv`);
+        const raw = await res.text();
+        sheets = parseCSV(raw);
+      }
 
       buildMeta(sheets['project_meta'] || []);
       const modules = sheets['modules'] || [];
@@ -301,7 +328,7 @@ const ENGINE = (() => {
       buildUpcoming(sheets['upcoming'] || []);
     } catch(e) {
       console.error('Engine error:', e);
-      document.getElementById('load-error').style.display = 'block';
+      showError(e.message || 'Unknown error.');
     }
   }
 

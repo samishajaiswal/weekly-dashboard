@@ -1,18 +1,5 @@
-/* engine.js — Dashboard Data Engine
-   Fetches from Google Sheets CSV URL (or falls back to local data.csv).
-   Parses ## SHEET: sections and drives all dynamic elements.
-   Requires PapaParse CDN. */
-
-// ─── DATA SOURCE CONFIGURATION ───────────────────────────────────────────────
-// Replace SHEET_ID below with your published Google Sheet ID.
-// The sheet must be published to the web (File → Share → Publish to web → CSV).
-// Each tab name must match exactly: project_meta, modules, closure_status, infra, upcoming
-//
-// URL format: https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq?tqx=out:csv&sheet=SHEET_NAME
-//
-// Set USE_GOOGLE_SHEETS = true once you have filled in SHEET_ID.
-const USE_GOOGLE_SHEETS = false;
-const SHEET_ID = 'YOUR_SHEET_ID_HERE';
+const USE_GOOGLE_SHEETS = true;
+const SHEET_ID = '1UUUu153ZXHCOUBK5ulZRt_ivpl_9NyTj';
 
 const SHEET_NAMES = ['project_meta', 'modules', 'closure_status', 'infra', 'upcoming'];
 
