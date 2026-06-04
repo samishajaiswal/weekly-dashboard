@@ -1,0 +1,49 @@
+## SHEET: project_meta
+section,key,value
+meta,org_name,DGMS
+meta,project_name,Directorate General of Mines Safety — Digital System
+meta,week_label,Week: 26–29 May 2026
+meta,completion_pct,60
+meta,expected_closure,To Be Determined
+meta,closure_note,Expected closure date will be updated in the next reporting cycle. Additional scope changes have been identified in the DGCM project and are currently under development.
+meta,project_desc,A digital reporting and diary management system for the Directorate General of Mines Safety (DGMS) covering daily inspection reports, blasting activity logs, surveyor records, and digital diaries for mine managers and safety officers. 7 out of 8 modules completed.
+meta,scope_note,Additional scope changes identified in the DGCM project. Development work ongoing and will be tracked in upcoming weekly reports once scope is finalised.
+meta,quality_note,7 modules completed. Blasting Overman Daily Report module is in active development. Self-testing pending on 4 modules before final sign-off.
+meta,footer_trophy,7 out of 8 modules completed. Final module in active development.
+
+## SHEET: modules
+module_id,module_name,category,status,sub_status,expected_date,remarks
+1,Login Form,Core,Completed,Done,,Role-based secure authentication
+2,Assistant Manager Diary,Diary,Completed,Done,,Digital diary for mine site activities
+3,Daily Report – Overman (Opencast),Report,Completed,Self-Testing Pending,,Self-testing in progress
+4,Sirdar's Daily Inspection Report (Opencast),Report,Completed,Self-Testing Pending,,Self-testing in progress
+5,Surveyor's Report Book,Report,Completed,Done,,Survey observations and measurements
+6,Mine Manager Diary,Diary,Completed,Self-Testing Pending,,Self-testing in progress
+7,Safety Officer Diary,Diary,Completed,Self-Testing Pending,,Self-testing in progress
+8,Daily Report – Blasting Overman (Opencast),Report,In Progress,Work In Progress,,Explosives usage and blast safety records
+
+## SHEET: closure_status
+icon,group_name,group_desc,status,badge_color
+🟢,Login Form,Completed and done,Done,green
+🟢,Assistant Manager Diary,Completed and done,Done,green
+🟡,Overman Daily Report,Self-testing pending,Testing,orange
+🟡,Sirdar's Inspection Report,Self-testing pending,Testing,orange
+🟢,Surveyor's Report Book,Completed and done,Done,green
+🟡,Mine Manager Diary,Self-testing pending,Testing,orange
+🟡,Safety Officer Diary,Self-testing pending,Testing,orange
+🔵,Blasting Overman Report,In active development,In Progress,orange
+
+## SHEET: infra
+icon,name,sublabel
+📔,Digital Diaries,Mine & Safety Officer
+📋,Inspection Reports,Daily Overman & Sirdar
+💥,Blast Reports,Explosive Activity Logs
+📐,Survey Book,Measurement Records
+🔐,Login System,Role-Based Access
+⚙️,DGCM,Additional Scope
+
+## SHEET: upcoming
+title,description
+Blasting Overman Report Completion,Completing the Daily Report for Blasting Overman covering explosives usage blast details and safety measures. Currently in active development.
+Self-Testing Sign-off,4 modules (Overman Report Sirdar Report Mine Manager Diary Safety Officer Diary) are pending self-testing review before formal completion.
+Additional DGCM Scope,New scope changes identified in the DGCM project are being scoped and will be tracked in upcoming sprint reports once finalised.

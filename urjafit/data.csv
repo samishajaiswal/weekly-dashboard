@@ -1,0 +1,78 @@
+## SHEET: project_meta
+section,key,value
+meta,org_name,UrjaFit
+meta,project_name,Employee Fitness & Wellness Platform
+meta,week_label,Sprint Report — June 2026
+meta,completion_pct,97
+meta,expected_closure,Next Sprint
+meta,closure_note,iOS application final 10% completion expected in the next sprint. No major blockers currently reported.
+meta,project_desc,UrjaFit is a comprehensive employee fitness and wellness platform consisting of Android and iOS mobile apps and a web-based Admin Panel. The platform covers employee onboarding, cycle tracking, health confirmations, leaderboards, safety SOS, challenges/events, and family dependent management.
+meta,scope_note,Final iOS QA and release readiness activities are ongoing. All Android features and Admin Panel have achieved 100% completion.
+meta,quality_note,Both Android mobile application and Admin Panel have achieved 100% completion. iOS is at 90% and on track. No major blockers reported.
+meta,footer_trophy,2 out of 3 platforms fully implemented and delivered. iOS in final 10%.
+
+## SHEET: modules
+module_id,module_name,category,status,sub_status,expected_date,remarks
+1,Splash Screen,Mobile App,Completed,Done,,Android & iOS
+2,Onboarding Screen,Mobile App,Completed,Done,,
+3,Employee / Guest / Family Dependent Login,Mobile App,Completed,Done,,
+4,OTP Screen,Mobile App,Completed,Done,,
+5,Permission Screen,Mobile App,Completed,Done,,
+6,App Lock & Fingerprint Lock,Mobile App,Completed,Done,,
+7,Home Screen,Mobile App,Completed,Done,,
+8,Goal Setting Screen,Mobile App,Completed,Done,,
+9,Notification Screen,Mobile App,Completed,Done,,
+10,Running / Walking / Cycling Map Screens,Mobile App,Completed,Done,,
+11,Leaderboard UI,Mobile App,Completed,Done,,
+12,Pre & Post Cycle Health Confirmation Screens,Mobile App,Completed,Done,,
+13,QR Code Scanning Screen,Mobile App,Completed,Done,,
+14,History & Family History Screens,Mobile App,Completed,Done,,
+15,Cycle Availability Screen,Mobile App,Completed,Done,,
+16,Safety Hub (SOS),Mobile App,Completed,Done,,
+17,Employee / Guest / Dependent Profile Screens,Mobile App,Completed,Done,,
+18,Manage / Add Dependent,Mobile App,Completed,Done,,
+19,Add Emergency Contact,Mobile App,Completed,Done,,
+20,Leaderboard API with Filters,Mobile App,Completed,Done,,
+21,Cycle Report Page UI,Mobile App,Completed,Done,,
+22,Challenges / Events Listing Page,Mobile App,Completed,Done,,
+23,Challenges / Events Detail Page,Mobile App,Completed,Done,,
+24,Home Dashboard (Admin),Admin Panel,Completed,Done,,
+25,Employees Listing Page,Admin Panel,Completed,Done,,
+26,Employee Details Page,Admin Panel,Completed,Done,,
+27,Issues Raised Section,Admin Panel,Completed,Done,,
+28,Cycle List Section,Admin Panel,Completed,Done,,
+29,Cycle Details,Admin Panel,Completed,Done,,
+30,Login (Admin),Admin Panel,Completed,Done,,
+31,Guest Details Page,Admin Panel,Completed,Done,,
+32,Guest Listing Page,Admin Panel,Completed,Done,,
+33,Dependent Details Page,Admin Panel,Completed,Done,,
+34,Dependent Listing Page,Admin Panel,Completed,Done,,
+35,Separate Ride Pages,Admin Panel,Completed,Done,,
+36,Live Rides,Admin Panel,Completed,Done,,
+37,All Completed Rides,Admin Panel,Completed,Done,,
+38,Challenges Listing Page,Admin Panel,Completed,Done,,
+39,Challenges Details Page,Admin Panel,Completed,Done,,
+40,Challenges User Details,Admin Panel,Completed,Done,,
+41,Cycling Reporting Page,Admin Panel,Completed,Done,,
+42,Cycling Returning Page,Admin Panel,Completed,Done,,
+43,iOS Final QA & Release,iOS,In Progress,Work In Progress,Next Sprint,Final 10% remaining
+
+## SHEET: closure_status
+icon,group_name,group_desc,status,badge_color
+🟢,Android App,100% complete — fully delivered,Completed,green
+🟢,Admin Panel,100% complete — fully operational,Completed,green
+🟡,iOS App,90% complete — final QA in progress,Next Sprint,orange
+
+## SHEET: infra
+icon,name,sublabel
+📱,Flutter,Cross-Platform Mobile
+🌐,React,Admin Web Panel
+🔌,REST APIs,Backend Integration
+🔐,Auth,OTP & App Lock
+📍,Maps,Cycling Route Tracking
+🏆,Leaderboard,Gamification Engine
+
+## SHEET: upcoming
+title,description
+iOS Final QA & Release,Completing the remaining 10% of iOS application including final quality assurance, device compatibility testing and App Store release preparation.
+Overall Release Readiness,Post-iOS completion: coordinated release activities for both mobile platforms and final admin panel deployment sign-off.

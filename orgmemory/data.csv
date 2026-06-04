@@ -1,0 +1,48 @@
+## SHEET: project_meta
+section,key,value
+meta,org_name,OrgMemory
+meta,project_name,Organisation Memory Platform
+meta,week_label,Week ending 29 May 2026
+meta,completion_pct,10
+meta,expected_closure,30 September 2026
+meta,closure_note,Project in early planning and development phase. Core architecture and knowledge ingestion modules currently being scoped. Full platform targeted for September 2026.
+meta,project_desc,Organisation Memory is an AI-powered institutional knowledge management platform designed to capture, structure, and surface organisational knowledge — including decisions, processes, expertise, and lessons learned — making it accessible and searchable across the organisation in real time.
+meta,scope_note,Phase 1 covers knowledge ingestion, tagging, and search. Phase 2 will introduce AI-assisted summarisation, expert routing, and integration with existing tools (Slack, Drive, email).
+meta,quality_note,Architecture design underway. Technology stack finalised. No blockers currently reported. Initial wireframes under review.
+meta,footer_trophy,Phase 1 development begins June 2026. Platform to capture and surface institutional knowledge across the organisation.
+
+## SHEET: modules
+module_id,module_name,category,status,sub_status,expected_date,remarks
+1,Knowledge Ingestion Engine,Core,In Progress,Work In Progress,30-Jun-2026,Captures documents emails and meeting notes into structured knowledge base
+2,Tagging & Categorisation,Core,Upcoming,,,AI-assisted tagging of knowledge by topic team and project
+3,Search & Discovery,Core,Upcoming,,,Full-text and semantic search across the knowledge base
+4,User Profiles & Expertise Map,Core,Upcoming,,,Maps employee expertise based on contributions and knowledge areas
+5,Knowledge Graph,AI,Upcoming,,,Graph-based relationships between people projects and decisions
+6,AI Summarisation,AI,Upcoming,,,Auto-summarises long documents and meeting transcripts
+7,Integration Layer,Integrations,Upcoming,,,Connects with Slack Google Drive and email systems
+8,Admin & Governance Panel,Core,Upcoming,,,Controls access roles permissions and audit trails
+9,Analytics Dashboard,Reporting,Upcoming,,,Usage stats knowledge health scores and gap analysis
+10,Mobile Access,Frontend,Upcoming,,,Responsive mobile interface for on-the-go knowledge access
+
+## SHEET: closure_status
+icon,group_name,group_desc,status,badge_color
+🟡,Knowledge Ingestion,Document and data ingestion pipeline,June 2026,orange
+⚪,Search & Tagging,AI tagging and semantic search,Not Started,grey
+⚪,Integrations,Slack · Drive · Email connectors,Not Started,grey
+⚪,AI Features,Summarisation and knowledge graph,Not Started,grey
+⚪,Admin & Analytics,Governance panel and reporting,Not Started,grey
+
+## SHEET: infra
+icon,name,sublabel
+🧠,Knowledge Base,Structured Storage
+🔍,Search Engine,Semantic Search
+🏷️,AI Tagger,Auto-Categorisation
+👤,Expert Map,Skills & Expertise
+🔗,Integrations,Slack · Drive · Email
+📊,Analytics,Usage & Health
+
+## SHEET: upcoming
+title,description
+Knowledge Ingestion Engine Completion,Finalising the pipeline to ingest documents, emails, and meeting notes into the structured knowledge base. Expected closure: 30 June 2026.
+Tagging & Categorisation Module,AI-assisted tagging system to automatically categorise knowledge by topic, team, and project context.
+Search & Discovery,Full-text and semantic search across the entire knowledge base — enabling employees to find relevant knowledge instantly.

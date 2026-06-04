@@ -1,0 +1,40 @@
+## SHEET: project_meta
+section,key,value
+meta,org_name,NTPC
+meta,project_name,Green Hydrogen Hub Web Project
+meta,week_label,Week ending 29 May 2026
+meta,completion_pct,65
+meta,expected_closure,05 June 2026
+meta,closure_note,Module 3 (Initiatives & Mobility Details) is in progress with changes from Mr. Lakshman Sir incorporated. Expected closure by 05 June 2026. Module 4 to begin after Module 3 completes.
+meta,project_desc,Frontend and UI/UX development of the NTPC Green Hydrogen Hub official website. The project covers core navigation, hub infrastructure information architecture, green product portfolios (Sustainable Aviation Fuel and Green Hydrogen), initiative details, mobility sections, and accessibility features including Hindi localisation and dynamic font scaling.
+meta,scope_note,Module 4 (Accessibility & Partner Integration) to begin after Module 3 closure. Includes Partner with Us portal Hindi localisation and dynamic font scaling (A- A A+).
+meta,quality_note,Modules 1 and 2 completed successfully. Module 3 in active development incorporating change requests from Mr. Lakshman Sir. Overall site structure well aligned with actual website architecture.
+meta,footer_trophy,2 out of 4 modules completed. Website 65% complete overall.
+
+## SHEET: modules
+module_id,module_name,category,status,sub_status,expected_date,remarks
+1,Core Navigation & Static Pages,Frontend,Completed,Done,,Home Outreach About Us Contact Us
+2,Hub Infrastructure & Offerings,Frontend,Completed,Done,,Hydrogen Hub Development RE Source Infrastructure Framework Green Products Portfolio
+3,Initiatives & Mobility Details,Frontend,In Progress,Work In Progress,05 June 2026,Blending Mobility Microgrid Locomotive — includes changes from Mr. Lakshman Sir
+4,Accessibility & Partner Integration,Frontend,Upcoming,,,Partner with Us portal Hindi localisation dynamic font scaling A- A A+
+
+## SHEET: closure_status
+icon,group_name,group_desc,status,badge_color
+🟢,Module 1,Core Navigation & Static Pages,Completed,green
+🟢,Module 2,Hub Infrastructure & Offerings,Completed,green
+🟡,Module 3,Initiatives & Mobility Details — in progress,05 June 2026,orange
+⚪,Module 4,Accessibility & Partner Integration — to begin,Upcoming,grey
+
+## SHEET: infra
+icon,name,sublabel
+🏗️,Module 1,Navigation & Static
+🏭,Module 2,Infrastructure & Hub
+🚁,Module 3,Initiatives & Mobility
+♿,Module 4,Accessibility & Partner
+🌿,Green Products,SAF & Green H₂
+🇮🇳,Hindi,Localisation
+
+## SHEET: upcoming
+title,description
+Module 4 — Accessibility & Partner Integration,Implementation of the Partner with Us portal Hindi language localisation and dynamic font scaling (A- A A+) across the website.
+Final Website Release,Upon completion of all 4 modules the full NTPC Green Hydrogen Hub website will be ready for deployment and go-live.

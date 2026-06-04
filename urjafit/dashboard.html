@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NVVN — Weekly Progress Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+:root{
+  --accent:#0ea5e9; --accent2:#0ea5e9; --gold:#f5b400;
+  --bg:#f0f4f8; --card:#ffffff;
+  --txt:#1a2744; --txt2:#4a5880; --muted:#8899bb;
+  --border:#dce6f5; --green:#22c55e; --orange:#f59e0b; --red:#ef4444;
+  --shadow:0 2px 16px rgba(37,99,235,0.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--txt);}
+
+/* Header */
+.hdr{background:linear-gradient(135deg,#1a2744 0%,#243a6b 50%,#1e3a5f 100%);padding:32px 48px 28px;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
+.hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--accent),var(--accent2),var(--gold));background-size:200%;animation:shimmer 4s linear infinite;}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+.hdr-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;}
+.hdr-left{display:flex;align-items:center;gap:16px;}
+.back-btn{color:rgba(255,255,255,0.5);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;transition:color .2s;}
+.back-btn:hover{color:var(--gold);}
+.hdr-divider{width:1px;height:40px;background:rgba(255,255,255,0.15);}
+.org-name{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--gold);letter-spacing:1px;line-height:1;}
+.proj-name{color:rgba(255,255,255,0.7);font-size:13px;margin-top:3px;}
+.hdr-right{text-align:right;}
+.week-badge{background:rgba(245,180,0,0.12);border:1px solid rgba(245,180,0,0.3);border-radius:8px;padding:8px 16px;display:inline-block;}
+.week-label{color:var(--gold);font-size:12px;font-weight:600;}
+.week-date{color:rgba(255,255,255,0.4);font-size:11px;margin-top:2px;}
+
+/* Layout */
+.wrap{max-width:1300px;margin:0 auto;padding:32px 40px 60px;}
+
+/* Error */
+#load-error{display:none;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:16px 20px;border-radius:10px;margin-bottom:20px;font-size:13px;}
+
+/* Stat cards */
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(37,99,235,0.12);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);}
+.stat-val{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:var(--txt);line-height:1;}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.5px;}
+.stat-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;opacity:.12;}
+
+/* Section headers */
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sec-hdr h3{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--txt);letter-spacing:.5px;text-transform:uppercase;}
+.sec-hdr::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* Row 1 */
+.row1{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:20px;margin-bottom:20px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:var(--shadow);}
+.card-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;}
+
+/* Project overview card */
+.overview-desc{font-size:13px;color:var(--txt2);line-height:1.7;margin-bottom:16px;}
+.overview-closure{background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(14,165,233,.06));border:1px solid rgba(37,99,235,.15);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--txt2);}
+.overview-closure strong{color:var(--accent);font-size:13px;}
+.progress-wrap{margin-top:4px;}
+.progress-label-row{display:flex;justify-content:space-between;margin-bottom:6px;}
+.progress-label{font-size:12px;color:var(--muted);}
+.progress-pct{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--accent);}
+.progress-bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
+.main-progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#0ea5e9,#38bdf8);width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1) .4s;}
+
+/* Donut charts */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.donut-wrap canvas{display:block;}
+.legend-item{font-size:11px;color:var(--txt2);display:flex;align-items:center;}
+
+/* Closure strip */
+.closure-strip{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 24px;margin-bottom:20px;box-shadow:var(--shadow);}
+#closure-strip{display:flex;gap:12px;flex-wrap:wrap;}
+.closure-item{display:flex;align-items:center;gap:10px;flex:1;min-width:160px;background:var(--bg);border-radius:10px;padding:10px 14px;}
+.closure-icon{font-size:18px;}
+.closure-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--txt);}
+.closure-desc{font-size:10px;color:var(--muted);margin-top:1px;}
+.closure-status{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;margin-left:auto;}
+.badge-green{background:#dcfce7;color:#166534;}
+.badge-orange{background:#fef3c7;color:#92400e;}
+.badge-grey{background:#f1f5f9;color:#64748b;}
+
+/* Row 2 */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.all-modules-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.module-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;background:var(--bg);font-size:12px;}
+.mod-num{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--muted);font-size:11px;min-width:22px;}
+.mod-name{flex:1;color:var(--txt2);}
+.mod-badge,.badge-completed{background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.badge-in-progress{background:#dbeafe;color:#1e40af;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.badge-upcoming{background:#f1f5f9;color:#64748b;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+
+/* Row 3 */
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px;}
+.check-icon{color:var(--green);font-weight:700;font-size:12px;min-width:16px;}
+.completed-list .module-item{font-size:12px;color:var(--txt2);}
+.ip{flex-direction:column;align-items:flex-start;gap:4px;}
+.ip-top{display:flex;align-items:center;gap:6px;width:100%;}
+.ip-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.ip-name{flex:1;font-size:12px;color:var(--txt2);}
+.ip-date{font-size:10px;color:var(--muted);padding-left:14px;}
+.sub-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.sub-done{background:#dcfce7;color:#166534;}
+.sub-self-testing-pending{background:#fef3c7;color:#92400e;}
+.sub-work-in-progress{background:#dbeafe;color:#1e40af;}
+.upcoming-item{padding:10px 12px;background:var(--bg);border-radius:10px;margin-bottom:8px;}
+.upcoming-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--txt);margin-bottom:4px;}
+.upcoming-desc{font-size:11.5px;color:var(--txt2);line-height:1.5;}
+
+/* Footer */
+.footer-section{margin-top:8px;}
+.trophy-banner{background:linear-gradient(135deg,#1a2744,#243a6b);border-radius:14px;padding:22px 28px;color:white;display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+.trophy-icon{font-size:32px;}
+.trophy-text{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;line-height:1.4;}
+.trophy-text span{color:var(--gold);}
+.infra-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px;}
+.infra-tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;box-shadow:var(--shadow);}
+.infra-icon{font-size:22px;display:block;margin-bottom:6px;}
+.infra-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--txt);display:block;}
+.infra-sub{font-size:10px;color:var(--muted);display:block;margin-top:2px;}
+.quality-card{background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(14,165,233,.05));border:1px solid rgba(37,99,235,.12);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--txt2);line-height:1.6;}
+.quality-card strong{color:var(--accent);}
+
+canvas{max-width:100%;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-left">
+      <a class="back-btn" href="../index.html">← Back</a>
+      <div class="hdr-divider"></div>
+      <div>
+        <div class="org-name" id="meta-org">NVVN</div>
+        <div class="proj-name" id="meta-project">Loading…</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="week-badge">
+        <div class="week-label" id="meta-week">Loading…</div>
+        <div class="week-date">Weekly Progress Report</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="load-error">⚠️ Could not load dashboard data. If using Google Sheets: check SHEET_ID is correct and the sheet is published to web. If using local data.csv: open via Live Server, not by double-clicking.</div>
+
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-val" id="stat-total">–</div><div class="stat-lbl">Total Modules</div><div class="stat-icon">📦</div></div>
+    <div class="stat-card" style="--accent:#22c55e"><div class="stat-val" id="stat-completed">–</div><div class="stat-lbl">Completed</div><div class="stat-icon">✅</div></div>
+    <div class="stat-card" style="--accent:#0ea5e9"><div class="stat-val" id="stat-inprogress">–</div><div class="stat-lbl">In Progress</div><div class="stat-icon">⚙️</div></div>
+    <div class="stat-card" style="--accent:#94a3b8"><div class="stat-val" id="stat-upcoming">–</div><div class="stat-lbl">Upcoming</div><div class="stat-icon">🔜</div></div>
+    <div class="stat-card" style="--accent:#f5b400"><div class="stat-val" id="stat-completion">–</div><div class="stat-lbl">Completion</div><div class="stat-icon">🎯</div></div>
+  </div>
+
+  <!-- Row 1 -->
+  <div class="row1">
+    <div class="card">
+      <div class="card-title">Project Overview</div>
+      <p class="overview-desc" id="meta-desc"></p>
+      <div class="overview-closure">
+        <strong>Expected Closure: <span id="meta-closure"></span></strong><br/>
+        <span id="meta-closure-note"></span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label-row">
+          <span class="progress-label">Overall Progress</span>
+          <span class="progress-pct" id="stat-completion2"></span>
+        </div>
+        <div class="progress-bar"><div class="main-progress-fill"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Feature Implementation</div>
+      <div class="donut-wrap">
+        <canvas id="donut-features" width="160" height="160"></canvas>
+        <div id="donut-features-legend" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Module Status</div>
+      <div class="donut-wrap">
+        <canvas id="donut-modules" width="160" height="160"></canvas>
+        <div id="donut-modules-legend" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Closure Strip -->
+  <div class="closure-strip">
+    <div class="sec-hdr"><h3>Deployment & Closure Status</h3></div>
+    <div id="closure-strip"></div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="row2">
+    <div class="card">
+      <div class="card-title">All Modules</div>
+      <div class="all-modules-list" id="all-modules-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Status Distribution</div>
+      <canvas id="bar-chart" width="400" height="240"></canvas>
+    </div>
+  </div>
+
+  <!-- Row 3 -->
+  <div class="row3">
+    <div class="card completed-list">
+      <div class="card-title">Completed Modules</div>
+      <div id="completed-modules-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Currently In Progress</div>
+      <div id="inprogress-modules-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Upcoming / Additional</div>
+      <div id="upcoming-list"></div>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="font-size:11px;color:var(--muted);font-style:italic;" id="meta-scope"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-section">
+    <div class="trophy-banner">
+      <div class="trophy-icon">🏆</div>
+      <div class="trophy-text" id="meta-trophy"></div>
+    </div>
+    <div class="infra-row" id="infra-tiles"></div>
+    <div class="quality-card"><strong>Quality Note:</strong> <span id="meta-quality"></span></div>
+  </div>
+</div>
+
+<script src="engine.js"></script>
+<script>
+// Sync stat-completion2 from stat-completion
+const obs = new MutationObserver(()=>{
+  const v = document.getElementById('stat-completion').textContent;
+  document.getElementById('stat-completion2').textContent = v;
+});
+obs.observe(document.getElementById('stat-completion'), {childList:true,characterData:true,subtree:true});
+</script>
+</body>
+</html>

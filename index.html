@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Weekly Reports Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --card-bg: #ffffff;
+    --header-bg: linear-gradient(135deg, #1a2744 0%, #243a6b 50%, #1e3a5f 100%);
+    --accent: #2563eb;
+    --accent2: #0ea5e9;
+    --gold: #f5b400;
+    --text-primary: #1a2744;
+    --text-secondary: #4a5880;
+    --text-muted: #8899bb;
+    --border: #dce6f5;
+    --shadow: 0 4px 24px rgba(37,99,235,0.08);
+    --shadow-hover: 0 16px 48px rgba(37,99,235,0.18);
+    --green: #22c55e;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --teal: #14b8a6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    color: var(--text-primary);
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--header-bg);
+    padding: 48px 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #f5b400, #2563eb, #0ea5e9, #f5b400);
+    background-size: 200%;
+    animation: shimmer 4s linear infinite;
+  }
+  @keyframes shimmer { 0%{background-position:0%} 100%{background-position:200%} }
+
+  .header-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+  .header-left { display: flex; align-items: center; gap: 20px; }
+  .logo-circle {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(245,180,0,0.15);
+    border: 2px solid rgba(245,180,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--gold);
+  }
+  .header-titles h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 38px; font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .header-titles p {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  .header-badge {
+    background: rgba(245,180,0,0.12);
+    border: 1px solid rgba(245,180,0,0.35);
+    border-radius: 8px;
+    padding: 10px 20px;
+    text-align: right;
+  }
+  .header-badge .date { color: var(--gold); font-size: 13px; font-weight: 600; }
+  .header-badge .sprint { color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 2px; }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 50px 40px 70px;
+  }
+
+  .section-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── TILES GRID ── */
+  .tiles-row {
+    display: flex;
+    gap: 28px;
+    margin-bottom: 28px;
+    justify-content: center;
+  }
+
+  /* ── PROJECT TILE ── */
+  .project-tile {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px 30px 28px;
+    width: 360px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.28s cubic-bezier(.34,1.56,.64,1), box-shadow 0.28s ease, border-color 0.2s ease;
+  }
+  .project-tile:hover {
+    transform: translateY(-6px) scale(1.025);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--tile-color, var(--accent));
+  }
+  .project-tile::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: 18px 18px 0 0;
+    background: var(--tile-color, var(--accent));
+  }
+  .project-tile::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: var(--tile-color, var(--accent));
+    opacity: 0.05;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .project-tile:hover::after { transform: scale(1.5); opacity: 0.08; }
+
+  .tile-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+  .tile-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--tile-color, var(--accent)) 12%, transparent);
+    font-size: 20px;
+  }
+  .tile-status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-final { background: #dcfce7; color: #166534; }
+  .badge-active { background: #dbeafe; color: #1e40af; }
+  .badge-progress { background: #fef3c7; color: #92400e; }
+  .badge-new { background: #f3e8ff; color: #6b21a8; }
+
+  .tile-body { }
+  .tile-org {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--tile-color, var(--accent));
+    margin-bottom: 4px;
+  }
+  .tile-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+  .tile-desc {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .tile-progress-wrap { margin-bottom: 18px; }
+  .tile-progress-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .tile-progress-label { font-size: 12px; color: var(--text-muted); }
+  .tile-progress-pct {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--tile-color, var(--accent));
+  }
+  .tile-progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .tile-progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--tile-color, var(--accent));
+    width: 0;
+    transition: width 1.2s cubic-bezier(.4,0,.2,1) 0.3s;
+  }
+
+  .tile-stats {
+    display: flex;
+    gap: 16px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+  .tile-stat { flex: 1; }
+  .tile-stat-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+  .tile-stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .tile-arrow {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--tile-color, var(--accent)) 10%, transparent);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--tile-color, var(--accent));
+    font-size: 14px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .project-tile:hover .tile-arrow {
+    background: var(--tile-color, var(--accent));
+    color: white;
+    transform: translateX(2px);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--header-bg);
+    padding: 22px 60px;
+    text-align: center;
+    color: rgba(255,255,255,0.35);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  footer span { color: var(--gold); }
+
+  /* Animate tiles on load */
+  .project-tile { opacity: 0; animation: fadeUp 0.5s ease forwards; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .tiles-row:nth-child(1) .project-tile:nth-child(1) { animation-delay: 0.1s; }
+  .tiles-row:nth-child(1) .project-tile:nth-child(2) { animation-delay: 0.2s; }
+  .tiles-row:nth-child(1) .project-tile:nth-child(3) { animation-delay: 0.3s; }
+  .tiles-row:nth-child(2) .project-tile:nth-child(1) { animation-delay: 0.4s; }
+  .tiles-row:nth-child(2) .project-tile:nth-child(2) { animation-delay: 0.5s; }
+  .tiles-row:nth-child(2) .project-tile:nth-child(3) { animation-delay: 0.6s; }
+  .tiles-row:nth-child(3) .project-tile:nth-child(1) { animation-delay: 0.7s; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="logo-circle">WR</div>
+      <div class="header-titles">
+        <h1>Weekly Reports</h1>
+        <p>Project Progress Overview &nbsp;·&nbsp; Week ending 29–30 May 2026</p>
+      </div>
+    </div>
+    <div class="header-badge">
+      <div class="date">01 June 2026</div>
+      <div class="sprint">7 Active Projects</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="section-label">Active Project Dashboards</div>
+
+  <!-- Row 1: 3 tiles -->
+  <div class="tiles-row">
+
+    <!-- NVVN -->
+    <a class="project-tile" href="nvvn/dashboard.html" style="--tile-color:#2563eb">
+      <div class="tile-header">
+        <div class="tile-icon">⚡</div>
+        <span class="tile-status-badge badge-final">Final Validation</span>
+      </div>
+      <div class="tile-body">
+        <div class="tile-org">NVVN</div>
+        <div class="tile-title">Demand Forecasting &amp; Supply Management System</div>
+        <div class="tile-desc">Multi-state energy load forecasting platform with real-time data visualisation across Delhi, UP &amp; Uttarakhand.</div>
+        <div class="tile-progress-wrap">
+          <div class="tile-progress-header">
+            <span class="tile-progress-label">Overall Completion</span>
+            <span class="tile-progress-pct">95%</span>
+          </div>
+          <div class="tile-progress-bar">
+            <div class="tile-progress-fill" data-width="95"></div>
+          </div>
+        </div>
+        <div class="tile-stats">
+          <div class="tile-stat"><div class="tile-stat-val">24</div><div class="tile-stat-lbl">Modules</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">21</div><div class="tile-stat-lbl">Completed</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">3</div><div class="tile-stat-lbl">In Progress</div></div>
+        </div>
+      </div>
+      <div class="tile-arrow">→</div>
+    </a>
+
+    <!-- UrjaFit -->
+    <a class="project-tile" href="urjafit/dashboard.html" style="--tile-color:#0ea5e9">
+      <div class="tile-header">
+        <div class="tile-icon">🏃</div>
+        <span class="tile-status-badge badge-active">In Progress</span>
+      </div>
+      <div class="tile-body">
+        <div class="tile-org">UrjaFit</div>
+        <div class="tile-title">Employee Fitness &amp; Wellness Platform</div>
+        <div class="tile-desc">Mobile app (Android &amp; iOS) + Admin panel for employee wellness, cycling, leaderboards &amp; health tracking.</div>
+        <div class="tile-progress-wrap">
+          <div class="tile-progress-header">
+            <span class="tile-progress-label">Overall Completion</span>
+            <span class="tile-progress-pct">97%</span>
+          </div>
+          <div class="tile-progress-bar">
+            <div class="tile-progress-fill" data-width="97"></div>
+          </div>
+        </div>
+        <div class="tile-stats">
+          <div class="tile-stat"><div class="tile-stat-val">3</div><div class="tile-stat-lbl">Platforms</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">2</div><div class="tile-stat-lbl">Completed</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">1</div><div class="tile-stat-lbl">In Progress</div></div>
+        </div>
+      </div>
+      <div class="tile-arrow">→</div>
+    </a>
+
+    <!-- LIMS -->
+    <a class="project-tile" href="lims/dashboard.html" style="--tile-color:#14b8a6">
+      <div class="tile-header">
+        <div class="tile-icon">🔬</div>
+        <span class="tile-status-badge badge-final">Security Audit</span>
+      </div>
+      <div class="tile-body">
+        <div class="tile-org">LIMS</div>
+        <div class="tile-title">Laboratory Investigation Management System</div>
+        <div class="tile-desc">End-to-end lab workflow system covering sample collection, processing, testing &amp; report generation for Phase 1.</div>
+        <div class="tile-progress-wrap">
+          <div class="tile-progress-header">
+            <span class="tile-progress-label">Overall Completion</span>
+            <span class="tile-progress-pct">99%</span>
+          </div>
+          <div class="tile-progress-bar">
+            <div class="tile-progress-fill" data-width="99"></div>
+          </div>
+        </div>
+        <div class="tile-stats">
+          <div class="tile-stat"><div class="tile-stat-val">8</div><div class="tile-stat-lbl">Modules</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">8</div><div class="tile-stat-lbl">Completed</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">–</div><div class="tile-stat-lbl">Pending</div></div>
+        </div>
+      </div>
+      <div class="tile-arrow">→</div>
+    </a>
+
+  </div><!-- /row-1 -->
+
+  <!-- Row 2: 3 tiles -->
+  <div class="tiles-row">
+
+    <!-- DGMS -->
+    <a class="project-tile" href="dgms/dashboard.html" style="--tile-color:#f59e0b">
+      <div class="tile-header">
+        <div class="tile-icon">⛏️</div>
+        <span class="tile-status-badge badge-progress">In Development</span>
+      </div>
+      <div class="tile-body">
+        <div class="tile-org">DGMS</div>
+        <div class="tile-title">Directorate General of Mines Safety System</div>
+        <div class="tile-desc">Digital diary &amp; inspection reporting platform for mine safety officers, managers, surveyors &amp; blasting overmen.</div>
+        <div class="tile-progress-wrap">
+          <div class="tile-progress-header">
+            <span class="tile-progress-label">Overall Completion</span>
+            <span class="tile-progress-pct">60%</span>
+          </div>
+          <div class="tile-progress-bar">
+            <div class="tile-progress-fill" data-width="60"></div>
+          </div>
+        </div>
+        <div class="tile-stats">
+          <div class="tile-stat"><div class="tile-stat-val">8</div><div class="tile-stat-lbl">Modules</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">7</div><div class="tile-stat-lbl">Completed</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">1</div><div class="tile-stat-lbl">In Progress</div></div>
+        </div>
+      </div>
+      <div class="tile-arrow">→</div>
+    </a>
+
+    <!-- NTPC -->
+    <a class="project-tile" href="ntpc/dashboard.html" style="--tile-color:#8b5cf6">
+      <div class="tile-header">
+        <div class="tile-icon">🌿</div>
+        <span class="tile-status-badge badge-progress">In Progress</span>
+      </div>
+      <div class="tile-body">
+        <div class="tile-org">NTPC</div>
+        <div class="tile-title">Green Hydrogen Hub Web Project</div>
+        <div class="tile-desc">Frontend &amp; UI/UX development of the NTPC Green Hydrogen Hub website covering navigation, infrastructure &amp; partner portals.</div>
+        <div class="tile-progress-wrap">
+          <div class="tile-progress-header">
+            <span class="tile-progress-label">Overall Completion</span>
+            <span class="tile-progress-pct">65%</span>
+          </div>
+          <div class="tile-progress-bar">
+            <div class="tile-progress-fill" data-width="65"></div>
+          </div>
+        </div>
+        <div class="tile-stats">
+          <div class="tile-stat"><div class="tile-stat-val">4</div><div class="tile-stat-lbl">Modules</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">2</div><div class="tile-stat-lbl">Completed</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">1</div><div class="tile-stat-lbl">In Progress</div></div>
+        </div>
+      </div>
+      <div class="tile-arrow">→</div>
+    </a>
+
+    <!-- PropertyReturn -->
+    <a class="project-tile" href="propreturn/dashboard.html" style="--tile-color:#ef4444">
+      <div class="tile-header">
+        <div class="tile-icon">🏠</div>
+        <span class="tile-status-badge badge-progress">Early Dev</span>
+      </div>
+      <div class="tile-body">
+        <div class="tile-org">PropertyReturn</div>
+        <div class="tile-title">Property Return Application</div>
+        <div class="tile-desc">Government-facing platform for structured annual property return submissions — covering immovable, movable, liability &amp; income declarations.</div>
+        <div class="tile-progress-wrap">
+          <div class="tile-progress-header">
+            <span class="tile-progress-label">Overall Completion</span>
+            <span class="tile-progress-pct">5%</span>
+          </div>
+          <div class="tile-progress-bar">
+            <div class="tile-progress-fill" data-width="5"></div>
+          </div>
+        </div>
+        <div class="tile-stats">
+          <div class="tile-stat"><div class="tile-stat-val">10</div><div class="tile-stat-lbl">Modules</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">0</div><div class="tile-stat-lbl">Completed</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">1</div><div class="tile-stat-lbl">In Progress</div></div>
+        </div>
+      </div>
+      <div class="tile-arrow">→</div>
+    </a>
+
+  </div><!-- /row-2 -->
+
+  <!-- Row 3: 1 tile centred -->
+  <div class="tiles-row">
+
+    <!-- Organisation Memory -->
+    <a class="project-tile" href="orgmemory/dashboard.html" style="--tile-color:#10b981">
+      <div class="tile-header">
+        <div class="tile-icon">🧠</div>
+        <span class="tile-status-badge badge-new">New</span>
+      </div>
+      <div class="tile-body">
+        <div class="tile-org">OrgMemory</div>
+        <div class="tile-title">Organisation Memory Platform</div>
+        <div class="tile-desc">AI-powered institutional knowledge management — capturing decisions, processes &amp; expertise and making them searchable across the organisation.</div>
+        <div class="tile-progress-wrap">
+          <div class="tile-progress-header">
+            <span class="tile-progress-label">Overall Completion</span>
+            <span class="tile-progress-pct">10%</span>
+          </div>
+          <div class="tile-progress-bar">
+            <div class="tile-progress-fill" data-width="10"></div>
+          </div>
+        </div>
+        <div class="tile-stats">
+          <div class="tile-stat"><div class="tile-stat-val">10</div><div class="tile-stat-lbl">Modules</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">0</div><div class="tile-stat-lbl">Completed</div></div>
+          <div class="tile-stat"><div class="tile-stat-val">1</div><div class="tile-stat-lbl">In Progress</div></div>
+        </div>
+      </div>
+      <div class="tile-arrow">→</div>
+    </a>
+
+  </div><!-- /row-3 -->
+
+</main>
+
+<footer>
+  Weekly Progress Dashboard &nbsp;·&nbsp; <span>Reporting Week: 25–30 May 2026</span> &nbsp;·&nbsp; Confidential – Internal Use Only
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const fills = document.querySelectorAll('.tile-progress-fill');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const el = e.target;
+          el.style.width = el.dataset.width + '%';
+        }
+      });
+    }, { threshold: 0.1 });
+    fills.forEach(f => observer.observe(f));
+  });
+</script>
+</body>
+</html>

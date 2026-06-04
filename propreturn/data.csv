@@ -1,0 +1,48 @@
+## SHEET: project_meta
+section,key,value
+meta,org_name,PropertyReturn
+meta,project_name,Property Return Application
+meta,week_label,Week ending 29 May 2026
+meta,completion_pct,5
+meta,expected_closure,31 July 2026
+meta,closure_note,Project in early development phase. Authentication Module currently in progress with expected closure 08 June 2026. 9 of 10 modules yet to begin.
+meta,project_desc,The Property Return Application is a government-facing digital platform for submission and management of property return forms. It covers authentication and access management, immovable and movable property declarations, liability records, foreign visit logs, extra income reporting, and administrative oversight.
+meta,scope_note,Development is proceeding module by module. Home Module and all form modules are scheduled to begin after Authentication Module closure.
+meta,quality_note,Authentication Module development is underway. All other modules are in the backlog pending sequential development. No blockers currently reported.
+meta,footer_trophy,1 of 10 modules currently in active development. Project on track for 31 July 2026 closure.
+
+## SHEET: modules
+module_id,module_name,category,status,sub_status,expected_date,remarks
+1,Authentication Module,Core,In Progress,Work In Progress,08-Jun-2026,User login authentication and access management
+2,Home Module,Core,Upcoming,,,Main dashboard and navigation hub
+3,Form 1 – Public Positions,Forms,Upcoming,,,Declaration of public positions held
+4,Immovable Property,Forms,Upcoming,,,Immovable property declaration and details
+5,Movable Property,Forms,Upcoming,,,Movable property assets declaration
+6,Liability,Forms,Upcoming,,,Liabilities and loans declaration
+7,Foreign Visit,Forms,Upcoming,,,Foreign visit records and disclosures
+8,Extra Income,Forms,Upcoming,,,Additional income sources declaration
+9,Reports Module,Core,Upcoming,,,Reporting generation and export
+10,Admin Module,Core,Upcoming,,,Administrative control and oversight panel
+
+## SHEET: closure_status
+icon,group_name,group_desc,status,badge_color
+🟡,Authentication Module,User login and access — in development,08 June 2026,orange
+⚪,Home Module,Main navigation hub,Not Started,grey
+⚪,Property Forms,Public Positions · Immovable · Movable · Liability,Not Started,grey
+⚪,Other Forms,Foreign Visit · Extra Income,Not Started,grey
+⚪,Reports & Admin,Reporting engine and admin panel,Not Started,grey
+
+## SHEET: infra
+icon,name,sublabel
+🔐,Authentication,Login & Access
+🏠,Home Module,Navigation Hub
+📋,Property Forms,Declarations
+📊,Reports,Generation & Export
+🛡️,Admin Panel,Oversight
+📁,Data Layer,Form Storage
+
+## SHEET: upcoming
+title,description
+Authentication Module Completion,Finalising user login authentication flow and role-based access management. Expected to close by 08 June 2026.
+Home Module Development,Development of the main dashboard and navigation hub to begin after Authentication Module closure.
+Property Declaration Forms,Sequential development of Immovable Property Movable Property Liability Foreign Visit and Extra Income declaration modules.
