@@ -1,16 +1,3 @@
-/* engine.js — Dashboard Data Engine
-   Fetches from Google Sheets CSV URL (or falls back to local data.csv).
-   Parses ## SHEET: sections and drives all dynamic elements.
-   Requires PapaParse CDN. */
-
-// ─── DATA SOURCE CONFIGURATION ───────────────────────────────────────────────
-// Replace SHEET_ID below with your published Google Sheet ID.
-// The sheet must be published to the web (File → Share → Publish to web → CSV).
-// Each tab name must match exactly: project_meta, modules, closure_status, infra, upcoming
-//
-// URL format: https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq?tqx=out:csv&sheet=SHEET_NAME
-//
-// Set USE_GOOGLE_SHEETS = true once you have filled in SHEET_ID.
 const USE_GOOGLE_SHEETS = true;
 const SHEET_ID = '18ho86aUanzWiFMTvB9bIkiAL54nZ1WeH';
 
@@ -22,10 +9,6 @@ function buildSheetUrl(sheetName) {
 
 const ENGINE = (() => {
 
-  // ── PARSER ─────────────────────────────────────────────────────────────────
-
-  // For Google Sheets mode: each tab is fetched individually and already is a
-  // plain CSV (no ## SHEET: header needed).
   async function fetchGoogleSheets() {
     const sheets = {};
     await Promise.all(SHEET_NAMES.map(async name => {
@@ -39,7 +22,6 @@ const ENGINE = (() => {
     return sheets;
   }
 
-  // For local data.csv mode: parses the multi-section ## SHEET: file
   function parseCSV(raw) {
     const sheets = {};
     const sections = raw.split(/^## SHEET:\s*/m).filter(s => s.trim());
@@ -53,21 +35,14 @@ const ENGINE = (() => {
     return sheets;
   }
 
-  // ── DOM HELPERS ────────────────────────────────────────────────────────────
   function setEl(id, val) {
     const el = document.getElementById(id);
     if (el) el.textContent = val;
   }
-  function setHTML(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.innerHTML = val;
-  }
 
-  // ── BUILDERS ───────────────────────────────────────────────────────────────
   function buildMeta(data) {
     const m = {};
     data.forEach(r => { m[r.key] = r.value; });
-
     setEl('meta-org', m.org_name);
     setEl('meta-project', m.project_name);
     setEl('meta-week', m.week_label);
@@ -77,8 +52,7 @@ const ENGINE = (() => {
     setEl('meta-scope', m.scope_note);
     setEl('meta-quality', m.quality_note);
     setEl('meta-trophy', m.footer_trophy);
-
-    const pct = parseInt(m.completion_pct);
+    const pct = parseInt(m.completion_pct) || 0;
     setEl('stat-completion', pct + '%');
     document.querySelectorAll('.main-progress-fill').forEach(el => {
       setTimeout(() => el.style.width = pct + '%', 300);
@@ -87,23 +61,16 @@ const ENGINE = (() => {
     if (circle) {
       const r = 54; const circ = 2 * Math.PI * r;
       circle.style.strokeDasharray = circ;
-      setTimeout(() => {
-        circle.style.strokeDashoffset = circ - (pct / 100) * circ;
-      }, 400);
+      setTimeout(() => { circle.style.strokeDashoffset = circ - (pct / 100) * circ; }, 400);
     }
     setEl('progress-pct-text', pct + '%');
   }
 
   function buildStats(modules) {
-    const total = modules.length;
-    const completed = modules.filter(m => m.status === 'Completed').length;
-    const inprogress = modules.filter(m => m.status === 'In Progress').length;
-    const upcoming = modules.filter(m => m.status === 'Upcoming').length;
-
-    setEl('stat-total', total);
-    setEl('stat-completed', completed);
-    setEl('stat-inprogress', inprogress);
-    setEl('stat-upcoming', upcoming);
+    setEl('stat-total', modules.length);
+    setEl('stat-completed', modules.filter(m => m.status === 'Completed').length);
+    setEl('stat-inprogress', modules.filter(m => m.status === 'In Progress').length);
+    setEl('stat-upcoming', modules.filter(m => m.status === 'Upcoming').length);
   }
 
   function buildModuleLists(modules) {
@@ -139,7 +106,7 @@ const ENGINE = (() => {
           <div class="ip-top">
             <span class="ip-dot"></span>
             <span class="ip-name">${m.module_name}</span>
-            <span class="sub-badge sub-${m.sub_status.toLowerCase().replace(/ /g,'-')}">${m.sub_status}</span>
+            <span class="sub-badge sub-${(m.sub_status||'').toLowerCase().replace(/ /g,'-')}">${m.sub_status||''}</span>
           </div>
           ${m.expected_date ? `<div class="ip-date">Expected: ${m.expected_date}</div>` : ''}
         </div>
@@ -167,12 +134,10 @@ const ENGINE = (() => {
     const labels = ['Completed','In Progress','Upcoming'];
     const total = data.reduce((a,b) => a+b, 0);
     if (total === 0) return;
-
     const cx = canvas.width/2, cy = canvas.height/2;
     const r = Math.min(cx, cy) - 20;
     const innerR = r * 0.62;
     let startAngle = -Math.PI/2;
-
     data.forEach((val, i) => {
       if (val === 0) return;
       const slice = (val / total) * 2 * Math.PI;
@@ -184,12 +149,10 @@ const ENGINE = (() => {
       ctx.fill();
       startAngle += slice;
     });
-
     ctx.beginPath();
     ctx.arc(cx, cy, innerR, 0, 2*Math.PI);
     ctx.fillStyle = '#ffffff';
     ctx.fill();
-
     ctx.textAlign = 'center';
     ctx.fillStyle = '#1a2744';
     ctx.font = 'bold 22px Rajdhani';
@@ -197,7 +160,6 @@ const ENGINE = (() => {
     ctx.font = '11px Nunito Sans';
     ctx.fillStyle = '#8899bb';
     ctx.fillText('Total', cx, cy + 18);
-
     const legend = document.getElementById(canvasId + '-legend');
     if (legend) {
       legend.innerHTML = data.map((v, i) => `
@@ -217,21 +179,18 @@ const ENGINE = (() => {
     const inprogress = modules.filter(m=>m.status==='In Progress').length;
     const upcoming = modules.filter(m=>m.status==='Upcoming').length;
     const total = modules.length;
-
     const bars = [
       { label: 'Total', val: total, color: '#94a3b8' },
       { label: 'Completed', val: completed, color: '#22c55e' },
       { label: 'In Progress', val: inprogress, color: '#2563eb' },
       { label: 'Upcoming', val: upcoming, color: '#f59e0b' },
     ];
-
     const W = canvas.width, H = canvas.height;
     const padL = 36, padR = 16, padT = 16, padB = 48;
     const barW = (W - padL - padR) / bars.length * 0.55;
     const gap = (W - padL - padR) / bars.length;
     const maxVal = total || 1;
     const chartH = H - padT - padB;
-
     ctx.clearRect(0, 0, W, H);
     for (let i=0; i<=4; i++) {
       const y = padT + chartH - (i/4)*chartH;
@@ -240,7 +199,6 @@ const ENGINE = (() => {
       ctx.fillStyle = '#8899bb'; ctx.font = '10px Nunito Sans'; ctx.textAlign = 'right';
       ctx.fillText(Math.round(maxVal*i/4), padL - 4, y + 3);
     }
-
     bars.forEach((b, i) => {
       const x = padL + i * gap + gap/2 - barW/2;
       const barH = (b.val / maxVal) * chartH;
@@ -306,10 +264,8 @@ const ENGINE = (() => {
     const el = document.getElementById('load-error');
     if (el) {
       el.style.display = 'block';
-      el.innerHTML = `
-        <strong>⚠ Data load failed.</strong> ${msg}<br>
-        <small style="opacity:.7">Check that the Google Sheet is published to the web, the SHEET_ID is correct, and CORS is not blocked. You can also open the browser console for details.</small>
-      `;
+      el.innerHTML = `<strong>⚠ Data load failed.</strong> ${msg}<br>
+        <small style="opacity:.7">Check that the Google Sheet is published to the web, the SHEET_ID is correct, and CORS is not blocked.</small>`;
     }
   }
 
@@ -324,12 +280,10 @@ const ENGINE = (() => {
         const raw = await res.text();
         sheets = parseCSV(raw);
       }
-
       buildMeta(sheets['project_meta'] || []);
       const modules = sheets['modules'] || [];
       buildStats(modules);
       buildModuleLists(modules);
-
       const completed = modules.filter(m=>m.status==='Completed').length;
       const inprogress = modules.filter(m=>m.status==='In Progress').length;
       const upcoming = modules.filter(m=>m.status==='Upcoming').length;
